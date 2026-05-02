@@ -1,13 +1,31 @@
-// Root layout — dark background, global font setup, and metadata
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Peerly",
-  description: "Find real people to learn from",
+  title: "Peerly — Find the person, not the post.",
+  description:
+    "Find real people learning the same thing as you, right now. Peerly catches the humans behind the posts.",
 };
 
 export default function RootLayout({
@@ -16,10 +34,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-background text-foreground min-h-screen`}>
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${bebasNeue.variable} ${jetbrainsMono.variable}`}
+    >
+      <body>{children}</body>
     </html>
   );
 }
