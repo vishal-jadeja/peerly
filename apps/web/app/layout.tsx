@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, DM_Sans, JetBrains_Mono } from "next/font/google";
+import SessionProvider from "@/components/providers/SessionProvider";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -38,7 +39,9 @@ export default function RootLayout({
       lang="en"
       className={`${dmSans.variable} ${bebasNeue.variable} ${jetbrainsMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
