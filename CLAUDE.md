@@ -6,11 +6,12 @@ AI drafts personalized outreach message per person.
 
 ## Architecture
 
-- Frontend: Next.js 14 (App Router) + Tailwind CSS + shadcn/ui
+- Frontend: Next.js (App Router) + Tailwind CSS v4 + shadcn/ui
 - Backend: Python FastAPI microservice (handles all scraping)
 - AI: Groq API (LLaMA 3.3-70b) for query generation + message drafting
 - Platforms: Reddit (public JSON API), X (twscrape), LinkedIn (Google→scrape)
-- Auth: None for V1 — fully stateless, no DB
+- Auth: NextAuth.js v5 (beta) + Prisma ORM + PostgreSQL (Prisma Postgres cloud)
+- Database: Prisma ORM v7 with `@prisma/adapter-pg` driver adapter
 
 ## Repo Structure
 
@@ -34,10 +35,28 @@ AI drafts personalized outreach message per person.
 
 ## Environment Variables
 
+All vars live in `apps/web/.env`. Required:
+
 ```
 GROQ_API_KEY=
 NEXT_PUBLIC_SCRAPER_URL=http://localhost:8000
+DATABASE_URL=                  # Prisma Postgres connection string
+AUTH_SECRET=                   # Generate with: npx auth secret
 ```
+
+Both Next.js and Prisma CLI load `apps/web/.env` automatically. The file is
+covered by `.gitignore` — never commit it.
+
+## Prisma 7 Config
+
+Prisma 7 removes `url = env("DATABASE_URL")` from `schema.prisma`. The URL
+now lives in `prisma.config.ts` (for migrate) and the `PrismaClient` constructor
+(for runtime via the pg driver adapter).
+
+- `prisma.config.ts` → `datasource.url` feeds `prisma migrate dev`
+- `lib/db.ts` → `new PrismaPg({ connectionString })` adapter feeds runtime queries
+- `schema.prisma` → datasource block has no `url` property
+- `prisma.config.ts` is excluded from `tsconfig.json` (CLI config, not app code)
 
 ## Coding Rules
 
@@ -49,6 +68,19 @@ NEXT_PUBLIC_SCRAPER_URL=http://localhost:8000
 - All Groq calls go through a single wrapper: /web/lib/groq.ts
 - Keep components small. Page = layout only. Logic = hooks. UI = components.
 - Use server actions for all API calls from frontend (no useEffect data fetching)
+
+## Dependency & Tooling Rules
+
+- **Always use the latest stable version** of every package. Do not pin to old
+  versions to work around issues — fix the issue using the current API instead.
+- **Read the official docs before implementing** anything that touches a library's
+  config, migration, or adapter layer. APIs change between major versions and
+  assumptions from v5/v6 are often wrong in v7+.
+- When a library upgrade changes config format (e.g. Prisma 7 removing
+  `datasource.url` from schema), fetch the official migration guide first, then
+  implement. Do not guess based on old patterns.
+- Audit `npm audit` output on installs. Address moderate/high severity findings
+  before shipping.
 
 ## Platform Scraper Notes
 
