@@ -4,10 +4,10 @@ import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
 export default function DashboardPage() {
   return (
-    <SearchProvider>
-      <Suspense>
+    <Suspense>
+      <SearchProvider>
         <DashboardShell />
-      </Suspense>
-    </SearchProvider>
+      </SearchProvider>
+    </Suspense>
   );
 }
