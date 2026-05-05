@@ -5,10 +5,12 @@ import ProcessSection from "@/components/landing/ProcessSection";
 import ProofSection from "@/components/landing/ProofSection";
 import PlatformsSection from "@/components/landing/PlatformsSection";
 import CTASection from "@/components/landing/CTASection";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export default function LandingPage() {
   return (
     <div className="landing-page">
+      <SmoothScroll />
       <LandingNav />
       <main>
         <HeroSection />
