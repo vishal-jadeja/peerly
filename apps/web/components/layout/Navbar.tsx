@@ -36,7 +36,7 @@ export function Navbar() {
                   Sign in
                 </Link>
                 <Link
-                  href="/register"
+                  href="/login"
                   className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:opacity-90 transition-opacity"
                 >
                   Get started

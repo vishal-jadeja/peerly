@@ -42,6 +42,10 @@ GROQ_API_KEY=
 NEXT_PUBLIC_SCRAPER_URL=http://localhost:8000
 DATABASE_URL=                  # Prisma Postgres connection string
 AUTH_SECRET=                   # Generate with: npx auth secret
+GOOGLE_CLIENT_ID=              # Google Cloud Console → OAuth 2.0 Client
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=              # GitHub Settings → Developer settings → OAuth Apps
+GITHUB_CLIENT_SECRET=
 ```
 
 Both Next.js and Prisma CLI load `apps/web/.env` automatically. The file is
