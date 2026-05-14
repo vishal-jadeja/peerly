@@ -108,7 +108,7 @@ Describe a learning goal in plain English. Peerly searches Reddit, X, and Linked
 | **AI** | Groq API &mdash; LLaMA 3.3-70b for query generation + message drafting |
 | **Database** | PostgreSQL + Prisma ORM v7 (pg driver adapter) |
 | **Auth** | NextAuth.js v5 (Google + GitHub OAuth, JWT strategy) |
-| **Platforms** | Reddit (public JSON API), X (twscrape), LinkedIn (Google search) |
+| **Platforms** | Reddit (public JSON API), X (twscrape), LinkedIn (DuckDuckGo via ddgs) |
 
 ## Architecture
 
@@ -131,7 +131,7 @@ Describe a learning goal in plain English. Peerly searches Reddit, X, and Linked
                     │  POST /scrape                            │
                     │    ├── RedditScraper  (public JSON API)  │
                     │    ├── TwitterScraper (twscrape)         │
-                    │    └── LinkedInScraper (Google → parse)  │
+                    │    └── LinkedInScraper (DuckDuckGo / ddgs)  │
                     │                                          │
                     │  All 3 run in parallel (asyncio.gather)  │
                     └──────────────────────────────────────────┘
@@ -169,13 +169,36 @@ NEXT_PUBLIC_SCRAPER_URL=http://localhost:8000
 # Database
 DATABASE_URL=postgresql://user:password@host:5432/peerly?sslmode=require
 
-# Auth
-AUTH_SECRET=          # Generate: npx auth secret
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
+# NextAuth secret — generate with: npx auth secret
+AUTH_SECRET=
+
+# Google OAuth — https://console.cloud.google.com → APIs & Services → Credentials
+# Authorized redirect URI: http://localhost:3000/api/auth/callback/google
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+
+# GitHub OAuth — https://github.com/settings/developers → OAuth Apps
+# Authorization callback URL: http://localhost:3000/api/auth/callback/github
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
 ```
+
+### 2b. Set up scraper environment variables
+
+```bash
+cp apps/scraper/.env.example apps/scraper/.env
+```
+
+Fill in `apps/scraper/.env` (only needed for X / Twitter — LinkedIn and Reddit need no credentials):
+
+```env
+# X (Twitter) credentials — optional, Twitter scraper is skipped if missing
+TWITTER_USERNAME=
+TWITTER_PASSWORD=
+TWITTER_EMAIL=
+```
+
+Each scraper degrades gracefully: missing Twitter creds → Twitter returns empty. Reddit and LinkedIn need no credentials.
 
 ### 3. Set up the database
 
@@ -186,6 +209,8 @@ npx prisma migrate dev
 ```
 
 ### 4. Start the scraper
+
+Make sure you completed step 2b — the scraper reads `apps/scraper/.env` at startup.
 
 ```bash
 cd apps/scraper
@@ -212,10 +237,20 @@ App runs at `http://localhost:3000`. Open it and sign in with Google or GitHub.
 | `NEXT_PUBLIC_SCRAPER_URL` | FastAPI scraper URL (default: `http://localhost:8000`) | Yes |
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
 | `AUTH_SECRET` | NextAuth.js secret (generate with `npx auth secret`) | Yes |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Yes |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes |
-| `GITHUB_CLIENT_ID` | GitHub OAuth app client ID | Yes |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret | Yes |
+| `AUTH_GOOGLE_ID` | Google OAuth client ID | Yes |
+| `AUTH_GOOGLE_SECRET` | Google OAuth client secret | Yes |
+| `AUTH_GITHUB_ID` | GitHub OAuth app client ID | Yes |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth app client secret | Yes |
+
+The scraper service reads from `apps/scraper/.env` (all optional):
+
+| Variable | Description |
+|----------|-------------|
+| `TWITTER_USERNAME` | X account username (Twitter scraper) |
+| `TWITTER_PASSWORD` | X account password |
+| `TWITTER_EMAIL` | X account email |
+
+Twitter is skipped if these are missing. Reddit and LinkedIn need no credentials.
 
 ## Project Structure
 
@@ -249,7 +284,7 @@ peerly/
 │       ├── scrapers/
 │       │   ├── reddit.py           # Reddit public JSON API
 │       │   ├── twitter.py          # X via twscrape
-│       │   └── linkedin.py         # LinkedIn via Google search
+│       │   └── linkedin.py         # LinkedIn via DuckDuckGo (ddgs)
 │       └── models/schemas.py       # Pydantic models
 │
 └── packages/

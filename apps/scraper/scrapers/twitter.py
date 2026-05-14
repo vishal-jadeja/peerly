@@ -1,8 +1,11 @@
 """X (Twitter) scraper — uses twscrape with credentials from environment."""
 import hashlib
+import logging
 import os
 from scrapers.base import BaseScraper
 from models.schemas import PersonResult
+
+logger = logging.getLogger(__name__)
 
 
 class TwitterScraper(BaseScraper):
@@ -12,11 +15,18 @@ class TwitterScraper(BaseScraper):
         except ImportError:
             return []
 
+        username = os.environ.get("TWITTER_USERNAME")
+        password = os.environ.get("TWITTER_PASSWORD")
+        email = os.environ.get("TWITTER_EMAIL")
+        if not (username and password and email):
+            logger.warning("Twitter scraper disabled: missing TWITTER_USERNAME/PASSWORD/EMAIL")
+            return []
+
         api = twscrape.API()
         await api.pool.add_account(
-            username=os.environ["TWITTER_USERNAME"],
-            password=os.environ["TWITTER_PASSWORD"],
-            email=os.environ["TWITTER_EMAIL"],
+            username=username,
+            password=password,
+            email=email,
             email_password=os.environ.get("TWITTER_EMAIL_PASSWORD", ""),
         )
         await api.pool.login_all()

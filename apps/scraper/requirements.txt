@@ -5,3 +5,5 @@ pydantic==2.7.4
 twscrape==0.13.0
 beautifulsoup4==4.12.3
 python-dotenv==1.0.1
+ddgs>=9.0.0
+

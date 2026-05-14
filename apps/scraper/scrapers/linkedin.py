@@ -1,46 +1,35 @@
-"""LinkedIn scraper — Google site: search to find public LinkedIn profile URLs, then scrapes snippets."""
+"""LinkedIn scraper — DuckDuckGo site: search via the ddgs library (no API key needed)."""
+import asyncio
 import hashlib
-import httpx
-from bs4 import BeautifulSoup
+import logging
+from ddgs import DDGS
 from scrapers.base import BaseScraper
 from models.schemas import PersonResult
 
-_GOOGLE_SEARCH = "https://www.google.com/search"
-_HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-    )
-}
+logger = logging.getLogger(__name__)
 
 
 class LinkedInScraper(BaseScraper):
     async def search(self, queries: list[str]) -> list[PersonResult]:
         results: list[PersonResult] = []
-        async with httpx.AsyncClient(headers=_HEADERS, follow_redirects=True) as client:
-            for query in queries:
-                results.extend(await self._run_query(client, query))
+        for query in queries:
+            results.extend(await self._run_query(query))
         return results
 
-    async def _run_query(self, client: httpx.AsyncClient, query: str) -> list[PersonResult]:
-        params = {"q": f"site:linkedin.com/in {query}", "num": 10}
-        resp = await client.get(_GOOGLE_SEARCH, params=params, timeout=10)
-        resp.raise_for_status()
+    async def _run_query(self, query: str) -> list[PersonResult]:
+        try:
+            raw = await asyncio.to_thread(self._ddg_search, query)
+        except Exception as exc:
+            logger.warning("LinkedIn DDG query failed for %r: %r", query, exc)
+            return []
 
-        soup = BeautifulSoup(resp.text, "html.parser")
         people: list[PersonResult] = []
-
-        for result in soup.select("div.g")[:10]:
-            link_tag = result.select_one("a[href*='linkedin.com/in/']")
-            if not link_tag:
+        for item in raw:
+            url = item.get("href", "")
+            if "linkedin.com/in/" not in url:
                 continue
-
-            url = link_tag["href"]
-            snippet_tag = result.select_one("div.VwiC3b, span.st")
-            snippet = snippet_tag.get_text(" ", strip=True) if snippet_tag else ""
-            title_tag = result.select_one("h3")
-            username = title_tag.get_text(strip=True) if title_tag else url
-
+            username = item.get("title") or url
+            snippet = item.get("body") or ""
             people.append(
                 PersonResult(
                     id=hashlib.md5(f"linkedin:{url}".encode()).hexdigest(),
@@ -53,3 +42,8 @@ class LinkedInScraper(BaseScraper):
                 )
             )
         return people
+
+    @staticmethod
+    def _ddg_search(query: str) -> list[dict]:
+        with DDGS() as ddgs:
+            return list(ddgs.text(f"site:linkedin.com/in {query}", max_results=10))

@@ -1,5 +1,6 @@
 """Pydantic schemas for all scraper request and response shapes."""
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+from pydantic.alias_generators import to_camel
 from typing import Literal
 
 
@@ -13,6 +14,8 @@ class ScrapeRequest(BaseModel):
 
 
 class PersonResult(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
     id: str
     username: str
     platform: Platform
