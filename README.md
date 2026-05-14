@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- REPLACE: Add a 1200x400 hero banner image showcasing Peerly's landing page or logo -->
-<img src="docs/images/banner.png" alt="Peerly Banner" width="100%" />
+<img src="https://github.com/user-attachments/assets/66b397fb-f419-4233-89dd-aaf897a6e159" alt="Peerly Banner" width="100%" />
 
 <br />
 <br />
@@ -32,7 +32,8 @@ Describe a learning goal in plain English. Peerly searches Reddit, X, and Linked
 <td align="center" width="33%">
 
 <!-- REPLACE: Landing page screenshot (e.g. 600x400) -->
-<img src="docs/images/landing.png" alt="Landing Page" width="100%" />
+<img src="https://github.com/user-attachments/assets/3f385586-e49d-429b-bf8c-8ccd1c5fcb28" alt="Landing Page" width="100%" />
+
 
 **Landing Page**
 
