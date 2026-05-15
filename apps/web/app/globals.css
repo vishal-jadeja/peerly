@@ -1662,11 +1662,13 @@ html {
   min-height: 100vh;
   color: var(--cream);
   font-family: var(--font-sans), sans-serif;
+  overflow-x: clip;
 }
 
 .d-body {
   display: flex;
   padding-top: 48px;
+  min-width: 0;
 }
 
 .d-main {
@@ -1674,6 +1676,9 @@ html {
   margin-left: 220px;
   padding: 40px 32px;
   min-height: calc(100vh - 48px);
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* ---- Nav ---- */
@@ -1850,6 +1855,8 @@ html {
   opacity: 0;
   animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   animation-delay: calc(var(--card-i, 0) * 80ms);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .d-crop {
@@ -1914,6 +1921,7 @@ html {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 .d-draft-label {
@@ -1949,6 +1957,8 @@ html {
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.8);
   min-height: 60px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .d-draft-actions {
@@ -2146,12 +2156,10 @@ html {
 }
 
 .d-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.04) 75%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.09) 50%,
+      rgba(255, 255, 255, 0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 2px;
@@ -2195,6 +2203,7 @@ html {
     opacity: 0;
     transform: translateY(24px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: none;
@@ -2202,29 +2211,90 @@ html {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ---- Responsive ---- */
 
 @media (max-width: 1100px) {
-  .d-grid { grid-template-columns: repeat(2, 1fr); }
+  .d-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 900px: sidebar still visible but two cards are too cramped — go single column */
+@media (max-width: 900px) {
+  .d-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .d-sidebar { display: none; }
-  .d-main { margin-left: 0; padding: 24px 16px; }
-  .d-grid { grid-template-columns: 1fr; }
-  .d-platform-toggles { display: none !important; }
+  .d-sidebar {
+    display: none;
+  }
+
+  .d-main {
+    margin-left: 0;
+    padding: 20px 14px;
+  }
+
+  .d-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .d-platform-toggles {
+    display: none !important;
+  }
+
+  .d-nav-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .d-nav {
+    padding: 0 14px;
+  }
+
+  .d-nav-new-search {
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+
+  .d-results-count {
+    font-size: 24px;
+  }
+
+  .d-card {
+    padding: 16px;
+  }
 }

@@ -102,15 +102,15 @@ export function PersonCard({ person, goal, index }: PersonCardProps) {
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "10px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0, flex: 1 }}>
           <div
             className="d-avatar"
             style={{ background: bgColor, color: textColor }}
           >
             {person.username[0].toUpperCase()}
           </div>
-          <div>
-            <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--cream)", letterSpacing: "0.02em", lineHeight: 1.2 }}>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--cream)", letterSpacing: "0.02em", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {person.username}
             </p>
             <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginTop: "2px" }}>

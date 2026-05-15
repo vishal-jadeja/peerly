@@ -48,7 +48,7 @@ export function DashNav() {
       )}
 
       {/* Platform toggles + action */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0, flexWrap: "wrap" }}>
         {showMeta && (
           <div className="d-platform-toggles" style={{ display: "flex", gap: "6px" }}>
             {PLATFORMS.map((p) => (
