@@ -41,7 +41,8 @@ Describe a learning goal in plain English. Peerly searches Reddit, X, and Linked
 <td align="center" width="33%">
 
 <!-- REPLACE: Dashboard search input screenshot (e.g. 600x400) -->
-<img src="docs/images/dashboard.png" alt="Dashboard" width="100%" />
+<img src="https://github.com/user-attachments/assets/06f24c5d-a913-43b1-8beb-1ed9714c729b" alt="Dashboard" width="100%" />
+
 
 **Dashboard**
 
@@ -49,7 +50,7 @@ Describe a learning goal in plain English. Peerly searches Reddit, X, and Linked
 <td align="center" width="33%">
 
 <!-- REPLACE: Results view with person cards screenshot (e.g. 600x400) -->
-<img src="docs/images/results.png" alt="Results" width="100%" />
+<img src="https://github.com/user-attachments/assets/d5a903fc-0578-44be-8d9b-1edc230a26ad" alt="Results" width="100%" />
 
 **Results**
 
