@@ -2,6 +2,7 @@
 
 import { useSearchContext } from "@/contexts/SearchContext";
 import { cn } from "@/lib/utils";
+import { UserMenu } from "@/components/dashboard/UserMenu";
 import type { Platform } from "@/types";
 
 const PLATFORM_LABELS: Record<Platform, string> = {
@@ -67,6 +68,7 @@ export function DashNav() {
             NEW SEARCH ↗
           </button>
         )}
+        <UserMenu />
       </div>
     </nav>
   );
